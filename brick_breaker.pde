@@ -137,6 +137,21 @@ void draw(){
     yBallDir = yBallDir * -1;
     yBallVel = yBallVel * yBallDir;
   }
+  
+  xBallPos=xBallPos+xBallVel;
+  yBallPos=yBallPos+yBallVel;
+  
+  //ball drop?
+  if (xBallPos>=width || xBallPos<=0){
+     xBallDir=-xBallDir; // now my direction is -1, moving to the left
+     xBallVel=xBallVel*xBallDir; // makes xVelocity negative
+   }
+   
+   if(yBallPos>=height || yBallPos<=0){
+     
+     yBallDir=-yBallDir;
+     yBallVel=yBallVel*yBallDir;
+   }
 }
 
 void mouseMoved(){
