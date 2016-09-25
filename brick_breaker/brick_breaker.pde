@@ -13,6 +13,7 @@ int brickWidth;
 int brickHeight;
 int playerLives;
 int padding;
+boolean ballHitRdy; //to prevent getting ball stuck in paddle
 
 
 class Brick{
@@ -121,6 +122,7 @@ void setup(){
   rect(xPlayerPos, yPlayerPos, playerWidth, playerHeight);
   bricks = new Brick[24];
   initializeBricks();
+  ballHitRdy = true;
 }
 
 void draw(){
@@ -132,16 +134,19 @@ void draw(){
   if(xBallPos >= width - ballSize/2 || xBallPos <= 0 + ballSize/2){
     xBallDir = xBallDir * -1;
     xBallVel = xBallVel * xBallDir;
+    ballHitRdy = true;
   }
   if(yBallPos <= 0 + ballSize/2){
     yBallDir = yBallDir * -1;
     yBallVel = yBallVel * yBallDir;
+    ballHitRdy = true;
   }
   
   //tests for collision with paddle and changes y direction of ball
-  if(xBallPos > xPlayerPos && xBallPos < xPlayerPos + playerWidth && yBallPos/yPlayerPos >= 1){
+  if(xBallPos > xPlayerPos && xBallPos < xPlayerPos + playerWidth && yBallPos/yPlayerPos >= 1 && yBallPos < yPlayerPos + playerHeight && ballHitRdy){
     yBallDir *= -1;
     yBallVel *= yBallDir;
+    ballHitRdy = false;
     //println("success");
   }
   
@@ -154,6 +159,7 @@ void draw(){
   xBallPos=xBallPos+xBallVel;
   yBallPos=yBallPos+yBallVel;
   
+  /*
   //ball drop?
   if (xBallPos>=width || xBallPos<=0){
      xBallDir=-xBallDir; // now my direction is -1, moving to the left
@@ -165,6 +171,7 @@ void draw(){
      yBallDir=-yBallDir;
      yBallVel=yBallVel*yBallDir;
    }
+   */
 }
 
 void mouseMoved(){
