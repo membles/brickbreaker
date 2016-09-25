@@ -143,7 +143,7 @@ void draw(){
   }
   
   //tests for collision with paddle and changes y direction of ball
-  if(xBallPos > xPlayerPos && xBallPos < xPlayerPos + playerWidth && yBallPos/yPlayerPos >= 1 && yBallPos < yPlayerPos + playerHeight && ballHitRdy){
+  if(xBallPos > xPlayerPos && xBallPos < xPlayerPos + playerWidth && yBallPos >= yPlayerPos && yBallPos < yPlayerPos + playerHeight && ballHitRdy){
     yBallDir *= -1;
     yBallVel *= yBallDir;
     ballHitRdy = false;
