@@ -13,7 +13,6 @@ int brickWidth;
 int brickHeight;
 int playerLives;
 int padding;
-boolean ballHitRdy; //to prevent getting ball stuck in paddle
 boolean gameOver;
 
 
@@ -63,7 +62,9 @@ class Brick{
       makeBrick();
     }
     else{
-      //destruction animation?
+      posX = 2000;
+      posY = 0;
+      makeBrick();
     }
   }
   void makeBrick(){
@@ -78,7 +79,7 @@ class Brick{
 Brick[] bricks;
 PFont f;
 
-void initializeBricks(){ //fix this
+void initializeBricks(){
   int brickHP = 3; //counts down
   int spacing = 25;
   int startX = 0;
@@ -88,10 +89,6 @@ void initializeBricks(){ //fix this
   int brickIterator = 0;
   for (int yMultiplier = 1; yMultiplier <= levels; yMultiplier++){
     for(int xPosition = startX; xPosition < width; xPosition += spacing + 75){ //75 is brick width - make that cleaner later
-      //bricks[brickIterator].changePosX(xPosition);
-      //bricks[brickIterator].changePosY(startY * yMultiplier);
-      //bricks[brickIterator].changeHP(brickHP);
-      //bricks[brickIterator].makeBrick();
       bricks[brickIterator] = new Brick(xPosition, positionY, brickHP);
       brickIterator++;
     }
@@ -113,7 +110,42 @@ void updateBricks(){
 }
 
 void detectBrickCollision(){
-  
+  for(int i = 0; i < bricks.length; i++){
+    if(bricks[i].hp > 0){
+      if(xBallPos >= bricks[i].posX - ballSize/2 && xBallPos <= bricks[i].posX + bricks[i].brickWidth + ballSize/2){
+        if(yBallPos >= bricks[i].posY - ballSize/2 && yBallPos <= bricks[i].posY){
+          yBallDir *= -1;
+          yBallVel *= yBallDir;
+          bricks[i].dmg();
+          bricks[i].update();
+          break;
+        }
+        else if(yBallPos <= bricks[i].posY + bricks[i].brickHeight + ballSize/2 && yBallPos >= bricks[i].posY + bricks[i].brickHeight){
+          yBallDir *= -1;
+          yBallVel *= yBallDir;
+          bricks[i].dmg();
+          bricks[i].update();
+          break;
+        }
+      }
+      else if(yBallPos >= bricks[i].posY - ballSize/2 && yBallPos <= bricks[i].posY + bricks[i].brickHeight + ballSize/2){
+        if(xBallPos >= bricks[i].posX - ballSize/2 && xBallPos <= bricks[i].posX){
+          xBallDir *= -1;
+          xBallVel *= xBallDir;
+          bricks[i].dmg();
+          bricks[i].update();
+          break;
+        }
+        else if(xBallPos <= bricks[i].posX + bricks[i].brickWidth + ballSize/2 && xBallPos >= bricks[i].posX + bricks[i].brickWidth){
+          xBallDir *= -1;
+          xBallVel *= xBallDir;
+          bricks[i].dmg();
+          bricks[i].update();
+          break;
+        }
+      }
+    }
+  }
 }
 
 void updateLifeStat(){
@@ -126,8 +158,18 @@ void updateLifeStat(){
   }
 }
 
+boolean checkWin(){
+  for(int i = 0; i < bricks.length; i++){
+    if(bricks[i].hp > 0){
+      return false;
+    }
+  }
+  return true;
+}
+
 void setup(){
   size(800,600);
+  //frameRate(60);
   background(255,255,255);
   f = createFont("Arial",16,true);
   gameOver = false;
@@ -148,7 +190,6 @@ void setup(){
   rect(xPlayerPos, yPlayerPos, playerWidth, playerHeight);
   bricks = new Brick[24];
   initializeBricks();
-  ballHitRdy = true;
 }
 
 void draw(){
@@ -168,12 +209,10 @@ void draw(){
   if(xBallPos >= width - ballSize/2 || xBallPos <= 0 + ballSize/2){
     xBallDir = xBallDir * -1;
     xBallVel = xBallVel * xBallDir;
-    ballHitRdy = true;
   }
   if(yBallPos <= 0 + ballSize/2){
     yBallDir = yBallDir * -1;
     yBallVel = yBallVel * yBallDir;
-    ballHitRdy = true;
   }
   else if(yBallPos > height){
     playerLives--;
@@ -187,12 +226,15 @@ void draw(){
   }
   
   //tests for collision with paddle and changes y direction of ball
-  if(xBallPos > xPlayerPos - playerWidth/2 && xBallPos < xPlayerPos + playerWidth/2 && yBallPos >= yPlayerPos && yBallPos < yPlayerPos + playerHeight && ballHitRdy){
-    yBallDir *= -1;
-    yBallVel *= yBallDir;
-    ballHitRdy = false;
-    //println("success");
+  if(xBallPos > mouseX - playerWidth/2 - ballSize/2 && xBallPos < mouseX + playerWidth/2 + ballSize/2){
+    if(yBallPos >= yPlayerPos - ballSize/2 && yBallPos <= yPlayerPos){
+      yBallDir *= -1;
+      yBallVel *= yBallDir;
+    }
   }
+  
+  detectBrickCollision();
+  updateBricks();
   
   /* //for testing
   println("ball:");
@@ -202,26 +244,16 @@ void draw(){
   */
   xBallPos=xBallPos+xBallVel;
   yBallPos=yBallPos+yBallVel;
-  
-  /*
-  //ball drop?
-  if (xBallPos>=width || xBallPos<=0){
-     xBallDir=-xBallDir; // now my direction is -1, moving to the left
-     xBallVel=xBallVel*xBallDir; // makes xVelocity negative
-   }
-   
-   if(yBallPos>=height || yBallPos<=0){
-     
-     yBallDir=-yBallDir;
-     yBallVel=yBallVel*yBallDir;
-   }
-   */
-   
-   //bricks
-   updateBricks();
-   //if(yBallPos < 
-   
-   updateLifeStat();
+  updateLifeStat();
+  if(checkWin()){
+    while(true){
+      println("victory");
+      textFont(f);
+      fill(0);
+      textAlign(CENTER);
+      text("You Win!", width/2, height/2);
+    }
+  }
 }
 
 void mouseMoved(){
