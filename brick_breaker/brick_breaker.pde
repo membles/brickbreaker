@@ -14,6 +14,7 @@ int brickHeight;
 int playerLives;
 int padding;
 boolean ballHitRdy; //to prevent getting ball stuck in paddle
+boolean gameOver;
 
 
 class Brick{
@@ -69,15 +70,20 @@ class Brick{
     fill(c);
     rect(posX, posY, brickWidth, brickHeight);
   }
+  void dmg(){
+    hp--;
+  }
 }
 
 Brick[] bricks;
+PFont f;
 
 void initializeBricks(){ //fix this
   int brickHP = 3; //counts down
   int spacing = 25;
   int startX = 0;
-  int startY = 25;
+  int startY = 10;
+  int positionY = startY;
   int levels = 3;
   int brickIterator = 0;
   for (int yMultiplier = 1; yMultiplier <= levels; yMultiplier++){
@@ -86,6 +92,7 @@ void initializeBricks(){ //fix this
       //bricks[brickIterator].changePosY(startY * yMultiplier);
       //bricks[brickIterator].changeHP(brickHP);
       //bricks[brickIterator].makeBrick();
+      bricks[brickIterator] = new Brick(xPosition, positionY, brickHP);
       brickIterator++;
     }
     brickHP--;
@@ -95,16 +102,35 @@ void initializeBricks(){ //fix this
     else{
       startX = 0;
     }
+    positionY = positionY + bricks[0].brickHeight + 10;
   }
 }
 
 void updateBricks(){
+  for(int i = 0; i < bricks.length; i++){
+    bricks[i].update();
+  }
+}
 
+void detectBrickCollision(){
+  
+}
+
+void updateLifeStat(){
+  int posX = 10;
+  int posY = height - 10;
+  int size = 5;
+  for(int i = 0; i < playerLives; i++){
+    ellipse(posX, posY, size, size);
+    posX += 15;
+  }
 }
 
 void setup(){
   size(800,600);
   background(255,255,255);
+  f = createFont("Arial",16,true);
+  gameOver = false;
   padding = 20;
   playerLives = 3;
   playerWidth = 100;
@@ -130,7 +156,15 @@ void draw(){
   fill(255,255,255);
   ellipse(xBallPos, yBallPos, ballSize, ballSize);
   rect(xPlayerPos - playerWidth/2, yPlayerPos, playerWidth, playerHeight);
-  //initializeBricks();
+  
+  if(gameOver){
+    println("gameover");
+    textFont(f);
+    fill(0);
+    textAlign(CENTER);
+    text("Game Over", width/2, height/2);
+  }
+  
   if(xBallPos >= width - ballSize/2 || xBallPos <= 0 + ballSize/2){
     xBallDir = xBallDir * -1;
     xBallVel = xBallVel * xBallDir;
@@ -141,9 +175,19 @@ void draw(){
     yBallVel = yBallVel * yBallDir;
     ballHitRdy = true;
   }
+  else if(yBallPos > height){
+    playerLives--;
+    if(playerLives > 0){
+      xBallPos = width/2;
+      yBallPos = height/2;
+    }
+    else{
+      gameOver = true;
+    }
+  }
   
   //tests for collision with paddle and changes y direction of ball
-  if(xBallPos > xPlayerPos && xBallPos < xPlayerPos + playerWidth && yBallPos >= yPlayerPos && yBallPos < yPlayerPos + playerHeight && ballHitRdy){
+  if(xBallPos > xPlayerPos - playerWidth/2 && xBallPos < xPlayerPos + playerWidth/2 && yBallPos >= yPlayerPos && yBallPos < yPlayerPos + playerHeight && ballHitRdy){
     yBallDir *= -1;
     yBallVel *= yBallDir;
     ballHitRdy = false;
@@ -172,6 +216,12 @@ void draw(){
      yBallVel=yBallVel*yBallDir;
    }
    */
+   
+   //bricks
+   updateBricks();
+   //if(yBallPos < 
+   
+   updateLifeStat();
 }
 
 void mouseMoved(){
