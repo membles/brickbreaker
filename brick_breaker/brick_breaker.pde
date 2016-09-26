@@ -147,6 +147,7 @@ void detectBrickCollision(){
 }
 
 void updateLifeStat(){
+  fill(#3498db);
   int posX = 10;
   int posY = height - 10;
   int size = 5;
@@ -168,7 +169,7 @@ boolean checkWin(){
 void setup(){
   size(800,600);
   //frameRate(60);
-  background(255,255,255);
+  background(#ecf0f1);
   f = createFont("Arial",16,true);
   gameOver = false;
   padding = 20;
@@ -191,9 +192,11 @@ void setup(){
 }
 
 void draw(){
-  background(255,255,255);
-  fill(255,255,255);
+  background(#ecf0f1);
+  noStroke();
+  fill(#2ecc71);
   ellipse(xBallPos, yBallPos, ballSize, ballSize);
+  fill(#3498db);
   rect(xPlayerPos - playerWidth/2, yPlayerPos, playerWidth, playerHeight);
   
   if(gameOver){
