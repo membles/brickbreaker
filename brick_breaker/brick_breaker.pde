@@ -1,4 +1,6 @@
 //Brick Breaker Game
+//Julian Frank
+//Jason Wong
 
 int CHANGE = -1;
 
@@ -103,7 +105,7 @@ void initializeBricks(){
     else{
       startX = 0;
     }
-    positionY = positionY + bricks[0].brickHeight + 10;
+    positionY = positionY + bricks[0].brickHeight + 25;
   }
 }
 
@@ -217,9 +219,9 @@ void draw(){
   if(yBallPos <= 0 + ballSize/2 && yBallVel < 0){
     yBallVel *= CHANGE;
   }
-  else if(yBallPos > height){
+  else if(yBallPos > height && !checkWin()){
     playerLives--;
-    if(playerLives > 0 && !checkWin()){
+    if(playerLives > 0){
       xBallPos = width/2;
       yBallPos = height/2;
     }
