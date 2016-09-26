@@ -1,3 +1,5 @@
+int CHANGE = -1;
+
 int xPlayerPos;
 int yPlayerPos;
 int playerHeight;
@@ -114,15 +116,13 @@ void detectBrickCollision(){
     if(bricks[i].hp > 0){
       if(xBallPos >= bricks[i].posX - ballSize/2 && xBallPos <= bricks[i].posX + bricks[i].brickWidth + ballSize/2){
         if(yBallPos >= bricks[i].posY - ballSize/2 && yBallPos <= bricks[i].posY){
-          yBallDir *= -1;
-          yBallVel *= yBallDir;
+          yBallVel *= CHANGE;
           bricks[i].dmg();
           bricks[i].update();
           break;
         }
         else if(yBallPos <= bricks[i].posY + bricks[i].brickHeight + ballSize/2 && yBallPos >= bricks[i].posY + bricks[i].brickHeight){
-          yBallDir *= -1;
-          yBallVel *= yBallDir;
+          yBallVel *= CHANGE;
           bricks[i].dmg();
           bricks[i].update();
           break;
@@ -130,15 +130,13 @@ void detectBrickCollision(){
       }
       else if(yBallPos >= bricks[i].posY - ballSize/2 && yBallPos <= bricks[i].posY + bricks[i].brickHeight + ballSize/2){
         if(xBallPos >= bricks[i].posX - ballSize/2 && xBallPos <= bricks[i].posX){
-          xBallDir *= -1;
-          xBallVel *= xBallDir;
+          xBallVel *= CHANGE;
           bricks[i].dmg();
           bricks[i].update();
           break;
         }
         else if(xBallPos <= bricks[i].posX + bricks[i].brickWidth + ballSize/2 && xBallPos >= bricks[i].posX + bricks[i].brickWidth){
-          xBallDir *= -1;
-          xBallVel *= xBallDir;
+          xBallVel *= CHANGE;
           bricks[i].dmg();
           bricks[i].update();
           break;
@@ -207,12 +205,10 @@ void draw(){
   }
   
   if(xBallPos >= width - ballSize/2 || xBallPos <= 0 + ballSize/2){
-    xBallDir = xBallDir * -1;
-    xBallVel = xBallVel * xBallDir;
+    xBallVel *= CHANGE;
   }
   if(yBallPos <= 0 + ballSize/2){
-    yBallDir = yBallDir * -1;
-    yBallVel = yBallVel * yBallDir;
+    xBallVel *= CHANGE;
   }
   else if(yBallPos > height){
     playerLives--;
@@ -228,8 +224,9 @@ void draw(){
   //tests for collision with paddle and changes y direction of ball
   if(xBallPos > mouseX - playerWidth/2 - ballSize/2 && xBallPos < mouseX + playerWidth/2 + ballSize/2){
     if(yBallPos >= yPlayerPos - ballSize/2 && yBallPos <= yPlayerPos){
-      yBallDir *= -1;
-      yBallVel *= yBallDir;
+      if(yBallVel > 0){
+        yBallVel *= CHANGE;
+      }
     }
   }
   
