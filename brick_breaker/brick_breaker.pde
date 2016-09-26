@@ -202,7 +202,6 @@ void draw(){
   rect(xPlayerPos - playerWidth/2, yPlayerPos, playerWidth, playerHeight);
   
   if(gameOver){
-    println("gameover");
     textFont(f);
     fill(0);
     textAlign(CENTER);
@@ -220,11 +219,11 @@ void draw(){
   }
   else if(yBallPos > height){
     playerLives--;
-    if(playerLives > 0){
+    if(playerLives > 0 && !checkWin()){
       xBallPos = width/2;
       yBallPos = height/2;
     }
-    else{
+    else if(playerLives <= 0){
       gameOver = true;
     }
   }
@@ -248,7 +247,6 @@ void draw(){
   updateLifeStat();
   
   if(checkWin()){
-    println("victory");
     textFont(f);
     fill(0);
     textAlign(CENTER);
