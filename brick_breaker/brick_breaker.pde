@@ -5,10 +5,10 @@ int yPlayerPos;
 int playerHeight;
 int playerWidth;
 int ballSize;
-int xBallPos;
-int yBallPos;
-int xBallVel;
-int yBallVel;
+float xBallPos;
+float yBallPos;
+float xBallVel;
+float yBallVel;
 int xBallDir;
 int yBallDir;
 int brickWidth;
@@ -115,13 +115,13 @@ void detectBrickCollision(){
   for(int i = 0; i < bricks.length; i++){
     if(bricks[i].hp > 0){
       if(xBallPos >= bricks[i].posX - ballSize/2 && xBallPos <= bricks[i].posX + bricks[i].brickWidth + ballSize/2){
-        if(yBallPos >= bricks[i].posY - ballSize/2 && yBallPos <= bricks[i].posY){
+        if(yBallPos >= bricks[i].posY - ballSize/2 && yBallPos <= bricks[i].posY && yBallVel > 0){ //checks top side
           yBallVel *= CHANGE;
           bricks[i].dmg();
           bricks[i].update();
           break;
         }
-        else if(yBallPos <= bricks[i].posY + bricks[i].brickHeight + ballSize/2 && yBallPos >= bricks[i].posY + bricks[i].brickHeight){
+        else if(yBallPos <= bricks[i].posY + bricks[i].brickHeight + ballSize/2 && yBallPos >= bricks[i].posY + bricks[i].brickHeight && yBallVel < 0){ //checks bottom side
           yBallVel *= CHANGE;
           bricks[i].dmg();
           bricks[i].update();
@@ -129,13 +129,13 @@ void detectBrickCollision(){
         }
       }
       else if(yBallPos >= bricks[i].posY - ballSize/2 && yBallPos <= bricks[i].posY + bricks[i].brickHeight + ballSize/2){
-        if(xBallPos >= bricks[i].posX - ballSize/2 && xBallPos <= bricks[i].posX){
+        if(xBallPos >= bricks[i].posX - ballSize/2 && xBallPos <= bricks[i].posX && xBallVel > 0){ //checks left side
           xBallVel *= CHANGE;
           bricks[i].dmg();
           bricks[i].update();
           break;
         }
-        else if(xBallPos <= bricks[i].posX + bricks[i].brickWidth + ballSize/2 && xBallPos >= bricks[i].posX + bricks[i].brickWidth){
+        else if(xBallPos <= bricks[i].posX + bricks[i].brickWidth + ballSize/2 && xBallPos >= bricks[i].posX + bricks[i].brickWidth && xBallVel < 0){ //checks right side
           xBallVel *= CHANGE;
           bricks[i].dmg();
           bricks[i].update();
@@ -181,8 +181,8 @@ void setup(){
   ballSize = 15;
   xBallPos = width/2;
   yBallPos = height/2;
-  xBallVel = 2;
-  yBallVel = 2;
+  xBallVel = 3.0;
+  yBallVel = 3.0;
   xBallDir = 1;
   yBallDir = 1;
   ellipse(xBallPos, yBallPos, ballSize, ballSize);
@@ -207,11 +207,14 @@ void draw(){
     text("Game Over", width/2, height/2);
   }
   
-  if(xBallPos >= width - ballSize/2 || xBallPos <= 0 + ballSize/2){
+  if(xBallPos >= width - ballSize/2 && xBallVel > 0){
     xBallVel *= CHANGE;
   }
-  if(yBallPos <= 0 + ballSize/2){
+  if(xBallPos <= 0 + ballSize/2 && xBallVel < 0){
     xBallVel *= CHANGE;
+  }
+  if(yBallPos <= 0 + ballSize/2 && yBallVel < 0){
+    yBallVel *= CHANGE;
   }
   else if(yBallPos > height){
     playerLives--;
@@ -236,15 +239,10 @@ void draw(){
   detectBrickCollision();
   updateBricks();
   
-  /* //for testing
-  println("ball:");
-  println(xBallPos);
-  println("player:");
-  println(xPlayerPos - playerWidth/2);
-  */
   xBallPos=xBallPos+xBallVel;
   yBallPos=yBallPos+yBallVel;
   updateLifeStat();
+  
   if(checkWin()){
     while(true){
       println("victory");
