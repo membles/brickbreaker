@@ -1,3 +1,5 @@
+//Brick Breaker Game
+
 int CHANGE = -1;
 
 int xPlayerPos;
@@ -236,21 +238,21 @@ void draw(){
     }
   }
   
-  detectBrickCollision();
-  updateBricks();
+  if(!checkWin()){
+    detectBrickCollision();
+    updateBricks();
+  }
   
   xBallPos=xBallPos+xBallVel;
   yBallPos=yBallPos+yBallVel;
   updateLifeStat();
   
   if(checkWin()){
-    while(true){
-      println("victory");
-      textFont(f);
-      fill(0);
-      textAlign(CENTER);
-      text("You Win!", width/2, height/2);
-    }
+    println("victory");
+    textFont(f);
+    fill(0);
+    textAlign(CENTER);
+    text("You Win!", width/2, height/2);
   }
 }
 
