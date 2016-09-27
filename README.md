@@ -1,4 +1,4 @@
-# brickbreaker
+# Brick Breaker
 Creative Coding Project
 
 By Julian Frank and Jason Wong
