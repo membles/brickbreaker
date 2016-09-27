@@ -1,6 +1,8 @@
 # brickbreaker
 Creative Coding Project
 
+By Julian Frank and Jason Wong
+
 Play Here: http://membles.com/brickbreaker
 
 Bugs:
